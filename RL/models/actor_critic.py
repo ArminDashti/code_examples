@@ -1,4 +1,3 @@
-# https://chat.openai.com/c/33a9ada9-8b93-48c6-8503-7e27c59144e0
 # This code was generated from chatGPT 3.5
 
 import torch
