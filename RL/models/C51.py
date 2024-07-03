@@ -93,3 +93,37 @@ class C51Agent:
         action = q_values.argmax().item()
         return action
 
+
+def train_c51_agent(env, agent, episodes, sync_interval):
+    for episode in range(episodes):
+        state = env.reset()
+        done = False
+        total_reward = 0
+        
+        while not done:
+            action = agent.act(state)
+            next_state, reward, done, _ = env.step(action)
+            agent.update(state, action, reward, next_state, done)
+            state = next_state
+            total_reward += reward
+            
+        if episode % sync_interval == 0:
+            agent.sync_target_net()
+        
+        print(f'Episode: {episode}, Total Reward: {total_reward}')
+        
+# Hyperparameters
+env = gym.make('CartPole-v1')
+input_dim = env.observation_space.shape[0]
+output_dim = env.action_space.n
+atom_size = 51
+v_min = -10
+v_max = 10
+gamma = 0.99
+lr = 0.001
+episodes = 500
+sync_interval = 10
+
+agent = C51Agent(input_dim, output_dim, atom_size, v_min, v_max, gamma, lr)
+train_c51_agent(env, agent, episodes, sync_interval)
+
